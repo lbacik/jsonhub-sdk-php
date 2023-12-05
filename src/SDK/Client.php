@@ -8,7 +8,6 @@ use JsonHub\SDK\Client\MapperService;
 use JsonHub\SDK\Client\RequestFactory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Throwable;
 
@@ -24,40 +23,58 @@ class Client
     public function getEntitiesByDefinition(string $definitionUuid): EntityCollection
     {
         $request = $this->requestFactory->createGetEntityByDefinitionRequest($definitionUuid);
-        $response = $this->httpRequest($request);
 
         /** @var EntityCollection */
-        return $this->mapperFactory
-            ->getMapperFor(EntityCollection::class)
-            ->map($response->getBody()->getContents());
+        return $this->processRequestAndMapResponse($request, EntityCollection::class);
     }
 
     public function getEntity(string $entityUuid): Entity
     {
         $request = $this->requestFactory->createGetEntityRequest($entityUuid);
-        $response = $this->httpRequest($request);
 
         /** @var Entity */
-        return $this->mapperFactory
-            ->getMapperFor(Entity::class)
-            ->map($response->getBody()->getContents());
+        return $this->processRequestAndMapResponse($request, Entity::class);
     }
 
     public function getDefinition(string $definitionUuid): Definition
     {
         $request = $this->requestFactory->createGetDefinitionRequest($definitionUuid);
-        $response = $this->httpRequest($request);
 
         /** @var Definition */
-        return $this->mapperFactory
-            ->getMapperFor(Definition::class)
-            ->map($response->getBody()->getContents());
+        return $this->processRequestAndMapResponse($request, Definition::class);
     }
 
-    private function httpRequest(RequestInterface $request): ResponseInterface
+    public function createEntity(array $data, string $definitionUuid, string $token): Entity
     {
+        $payload = [
+            'data' => $data,
+            'definition' => '/api/definitions/' . $definitionUuid,
+        ];
+
+        $request = $this->requestFactory->createCreateEntityRequest($payload, $token);
+
+        /** @var Entity */
+        return $this->processRequestAndMapResponse($request, Entity::class);
+    }
+
+    public function validateToken(string $token): bool
+    {
+        $request = $this->requestFactory->createValidateTokenRequest($token);
+
+        $response = $this->httpClient->sendRequest($request);
+
+        return $response->getStatusCode() === 200;
+    }
+
+    private function processRequestAndMapResponse(
+        RequestInterface $request,
+        string $responseClassMapper
+    ): object {
         try {
-            return $this->httpClient->sendRequest($request);
+            $response = $this->httpClient->sendRequest($request);
+            return $this->mapperFactory
+                ->getMapperFor($responseClassMapper)
+                ->map($response->getBody()->getContents());
         } catch (Throwable $e) {
             throw new RuntimeException('Error while sending request', 0, $e);
         }

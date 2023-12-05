@@ -18,7 +18,7 @@ class EntityMapper extends MapperAbstract
         return new Entity(
             $data['id'] ?? null,
             $data['@id'] ?? null,
-            $data['slug'],
+            $data['slug'] ?? '',
             $data['data'],
         );
     }
