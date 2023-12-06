@@ -20,6 +20,7 @@ class EntityMapper extends MapperAbstract
             $data['@id'] ?? null,
             $data['slug'] ?? '',
             $data['data'],
+            $data['definition'],
         );
     }
 }

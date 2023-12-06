@@ -11,6 +11,7 @@ readonly class Entity
         public ?string $iri,
         public string $slug,
         public array $data,
+        public string $definition,
     ) {
     }
 }

@@ -56,6 +56,7 @@ class ClientTest extends TestCase
                         'id' => '123',
                         'slug' => 'test',
                         'data' => [],
+                        'definition' => '345',
                     ],
                 ],
             ]));
@@ -76,6 +77,7 @@ class ClientTest extends TestCase
                     'id' => '123',
                     'slug' => 'test',
                     'data' => [],
+                    'definition' => '345',
             ]));
 
         $result = $this->jsonHubClient->getEntity('123');
@@ -92,7 +94,7 @@ class ClientTest extends TestCase
             ->willReturn($this->createResponse([
                 'id' => '123',
                 'slug' => 'test',
-                'data' => [],
+                'jsonSchema' => [],
             ]));
 
         $result = $this->jsonHubClient->getDefinition('123');
