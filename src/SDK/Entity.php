@@ -7,11 +7,11 @@ namespace JsonHub\SDK;
 readonly class Entity
 {
     public function __construct(
-        public ?string $id,
-        public ?string $iri,
+        public string|null $id,
+        public string|null $iri,
         public string $slug,
         public array $data,
-        public string $definition,
+        public string|null $definition, // EntityByDefinition results do not have this field
     ) {
     }
 }
