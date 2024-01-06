@@ -20,13 +20,13 @@ class Client
     ) {
     }
 
-    public function getEntitiesByDefinition(string $definitionUuid): EntityCollection
-    {
-        $request = $this->requestFactory->createGetEntityByDefinitionRequest($definitionUuid);
-
-        /** @var EntityCollection */
-        return $this->processRequestAndMapResponse($request, EntityCollection::class);
-    }
+//    public function getEntitiesByDefinition(string $definitionUuid): EntityCollection
+//    {
+//        $request = $this->requestFactory->createGetEntityByDefinitionRequest($definitionUuid);
+//
+//        /** @var EntityCollection */
+//        return $this->processRequestAndMapResponse($request, EntityCollection::class);
+//    }
 
     public function getEntity(string $entityUuid): Entity
     {
@@ -34,6 +34,22 @@ class Client
 
         /** @var Entity */
         return $this->processRequestAndMapResponse($request, Entity::class);
+    }
+
+    public function getEntities(FilterCriteria $criteria): EntityCollection
+    {
+        $request = $this->requestFactory->createGetEntitiesRequest($criteria);
+
+        /** @var EntityCollection */
+        return $this->processRequestAndMapResponse($request, EntityCollection::class);
+    }
+
+    public function getMyEntities(FilterCriteria $criteria, string $token): EntityCollection
+    {
+        $request = $this->requestFactory->createGetMyEntitiesRequest($criteria, $token);
+
+        /** @var EntityCollection */
+        return $this->processRequestAndMapResponse($request, EntityCollection::class);
     }
 
     public function getDefinition(string $definitionUuid): Definition

@@ -20,6 +20,28 @@ readonly class UrlFactory
         );
     }
 
+    public function getEntities(?string $filter = null): string
+    {
+        $base = sprintf('%s/entities', $this->apiUrl);
+
+        if ($filter) {
+            return sprintf('%s?%s', $base, $filter);
+        }
+
+        return $base;
+    }
+
+    public function getMyEntities(?string $filter = null): string
+    {
+        $base = sprintf('%s/my/entities', $this->apiUrl);
+
+        if ($filter) {
+            return sprintf('%s?%s', $base, $filter);
+        }
+
+        return $base;
+    }
+
     public function getEntity(string $entityUuid): string
     {
         return sprintf(
@@ -39,22 +61,6 @@ readonly class UrlFactory
     }
 
     public function createEntity(): string
-    {
-        return sprintf('%s/entities', $this->apiUrl);
-    }
-
-    public function search(string $term, int $page = 0, int $limit = 10): string
-    {
-        return sprintf(
-            '%s/search/term=%s?page=%d&limit=%d',
-            $this->apiUrl,
-            $term,
-            $page,
-            $limit
-        );
-    }
-
-    public function getEntities(): string
     {
         return sprintf('%s/entities', $this->apiUrl);
     }
