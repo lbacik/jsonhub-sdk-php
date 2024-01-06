@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace JsonHub\SDK\Client\Mapper;
 
-use JsonHub\SDK\Entity;
 use JsonHub\SDK\EntityCollection;
 
 class EntityCollectionMapper extends MapperAbstract
@@ -24,7 +23,7 @@ class EntityCollectionMapper extends MapperAbstract
         return new EntityCollection(
             array_map(
                 fn (array $item) => $this->entityMapper->mapArray($item),
-                $data['entities'] ?? [],
+                $data,
             )
         );
     }

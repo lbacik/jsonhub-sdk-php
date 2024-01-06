@@ -14,6 +14,7 @@ use JsonHub\SDK\Client\UrlFactory;
 use JsonHub\SDK\Definition;
 use JsonHub\SDK\Entity;
 use JsonHub\SDK\EntityCollection;
+use JsonHub\SDK\FilterCriteria;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -51,17 +52,15 @@ class ClientTest extends TestCase
             ->expects($this->once())
             ->method('sendRequest')
             ->willReturn($this->createResponse([
-                'entities' => [
-                    [
-                        'id' => '123',
-                        'slug' => 'test',
-                        'data' => [],
-                        'definition' => '345',
-                    ],
+                [
+                    'id' => '123',
+                    'slug' => 'test',
+                    'data' => [],
+                    'definition' => '345',
                 ],
             ]));
 
-        $result = $this->jsonHubClient->getEntitiesByDefinition('123');
+        $result = $this->jsonHubClient->getEntities(new FilterCriteria(definitionUuid: '345'));
 
         $this->assertInstanceOf(EntityCollection::class, $result);
         $this->assertCount(1, $result);
