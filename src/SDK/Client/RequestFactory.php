@@ -31,7 +31,7 @@ readonly class RequestFactory
         return new Request(
             self::GET,
             $this->urlFactory->getEntities($criteria->generateQueryString()),
-            $this->generateHeaders()
+            $this->generateHeaders(accept: 'application/ld+json'),
         );
     }
 
@@ -81,11 +81,13 @@ readonly class RequestFactory
         );
     }
 
-    private function generateHeaders(?string $token = null): array
-    {
+    private function generateHeaders(
+        ?string $token = null,
+        string $accept = 'application/json'
+    ): array {
         $headers =  [
             'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
+            'Accept' => $accept,
         ];
 
         if ($token) {

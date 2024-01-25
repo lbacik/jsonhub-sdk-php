@@ -13,20 +13,14 @@ use Throwable;
 
 class Client
 {
+    private int $lastQueryCount = -1;
+
     public function __construct(
         private readonly ClientInterface $httpClient,
         private readonly RequestFactory $requestFactory,
         private readonly MapperService $mapperFactory,
     ) {
     }
-
-//    public function getEntitiesByDefinition(string $definitionUuid): EntityCollection
-//    {
-//        $request = $this->requestFactory->createGetEntityByDefinitionRequest($definitionUuid);
-//
-//        /** @var EntityCollection */
-//        return $this->processRequestAndMapResponse($request, EntityCollection::class);
-//    }
 
     public function getEntity(string $entityUuid): Entity
     {
@@ -82,17 +76,30 @@ class Client
         return $response->getStatusCode() === 200;
     }
 
+    public function getLastQueryCount(): int
+    {
+        return $this->lastQueryCount;
+    }
+
     private function processRequestAndMapResponse(
         RequestInterface $request,
         string $responseClassMapper
     ): object {
         try {
             $response = $this->httpClient->sendRequest($request);
+            $body = $this->extractFromJsonLD($response->getBody()->getContents());
             return $this->mapperFactory
                 ->getMapperFor($responseClassMapper)
-                ->map($response->getBody()->getContents());
+                ->map($body);
         } catch (Throwable $e) {
             throw new RuntimeException('Error while sending request', 0, $e);
         }
+    }
+
+    private function extractFromJsonLD(string $json): string
+    {
+        $data = json_decode($json, true);
+        $this->lastQueryCount = $data['hydra:totalItems'] ?? -1;
+        return isset($data['hydra:member']) ? json_encode($data['hydra:member']) : $json;
     }
 }
