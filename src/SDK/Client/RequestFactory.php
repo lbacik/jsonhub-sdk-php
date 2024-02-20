@@ -81,6 +81,20 @@ readonly class RequestFactory
         );
     }
 
+    public function createGetOAuthTokenRequest(string $clientId, string $clientSecret): Request
+    {
+        return new Request(
+            self::POST,
+            $this->urlFactory->getOAuthToken(),
+            $this->generateHeaders(),
+            json_encode([
+                'clientId' => $clientId,
+                'clientSecret' => $clientSecret,
+                'grantType' => 'client_credentials',
+            ])
+        );
+    }
+
     private function generateHeaders(
         ?string $token = null,
         string $accept = 'application/json'

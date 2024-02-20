@@ -69,4 +69,9 @@ readonly class UrlFactory
     {
         return sprintf('%s/token/validate', $this->apiUrl);
     }
+
+    public function getOAuthToken(): string
+    {
+        return sprintf('%s/oauth2/token', $this->apiUrl);
+    }
 }

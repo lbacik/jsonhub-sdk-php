@@ -76,6 +76,21 @@ class Client
         return $response->getStatusCode() === 200;
     }
 
+    public function getOAuthToken(string $clientId, string $clientSecret): string|null
+    {
+        $request = $this->requestFactory->createGetOAuthTokenRequest($clientId, $clientSecret);
+
+        $response = $this->httpClient->sendRequest($request);
+
+        if ($response->getStatusCode() !== 201) {
+            return null;
+        }
+
+        $body = json_decode($response->getBody()->getContents(), true);
+
+        return $body['accessToken'] ?? $body['token'];
+    }
+
     public function getLastQueryCount(): int
     {
         return $this->lastQueryCount;
