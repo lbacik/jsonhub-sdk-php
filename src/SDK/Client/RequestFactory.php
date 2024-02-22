@@ -26,12 +26,12 @@ readonly class RequestFactory
         );
     }
 
-    public function createGetEntitiesRequest(FilterCriteria $criteria): Request
+    public function createGetEntitiesRequest(FilterCriteria $criteria, string|null $token = null): Request
     {
         return new Request(
             self::GET,
             $this->urlFactory->getEntities($criteria->generateQueryString()),
-            $this->generateHeaders(accept: 'application/ld+json'),
+            $this->generateHeaders($token, 'application/ld+json'),
         );
     }
 
@@ -44,12 +44,12 @@ readonly class RequestFactory
         );
     }
 
-    public function createGetEntityRequest(string $entityUuid): Request
+    public function createGetEntityRequest(string $entityUuid, string|null $token = null): Request
     {
         return new Request(
             self::GET,
             $this->urlFactory->getEntity($entityUuid),
-            $this->generateHeaders()
+            $this->generateHeaders($token)
         );
     }
 

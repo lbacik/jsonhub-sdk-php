@@ -22,17 +22,17 @@ class Client
     ) {
     }
 
-    public function getEntity(string $entityUuid): Entity
+    public function getEntity(string $entityUuid, string|null $token = null): Entity
     {
-        $request = $this->requestFactory->createGetEntityRequest($entityUuid);
+        $request = $this->requestFactory->createGetEntityRequest($entityUuid, $token);
 
         /** @var Entity */
         return $this->processRequestAndMapResponse($request, Entity::class);
     }
 
-    public function getEntities(FilterCriteria $criteria): EntityCollection
+    public function getEntities(FilterCriteria $criteria, string|null $token = null): EntityCollection
     {
-        $request = $this->requestFactory->createGetEntitiesRequest($criteria);
+        $request = $this->requestFactory->createGetEntitiesRequest($criteria, $token);
 
         /** @var EntityCollection */
         return $this->processRequestAndMapResponse($request, EntityCollection::class);
