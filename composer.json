@@ -6,7 +6,8 @@
     "require": {
         "psr/http-client": "^1.0",
         "guzzlehttp/guzzle": "^7.8",
-        "lbacik/object-collection": "^0.1.0"
+        "lbacik/object-collection": "^0.1.0",
+        "psr/log": "^3.0"
     },
     "autoload": {
         "psr-4": {

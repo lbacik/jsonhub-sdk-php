@@ -8,6 +8,7 @@ use JsonHub\SDK\Client\MapperService;
 use JsonHub\SDK\Client\RequestFactory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Throwable;
 
@@ -19,6 +20,7 @@ class Client
         private readonly ClientInterface $httpClient,
         private readonly RequestFactory $requestFactory,
         private readonly MapperService $mapperFactory,
+        private readonly LoggerInterface|null $logger,
     ) {
     }
 
@@ -106,8 +108,9 @@ class Client
             return $this->mapperFactory
                 ->getMapperFor($responseClassMapper)
                 ->map($body);
-        } catch (Throwable $e) {
-            throw new RuntimeException('Error while sending request', 0, $e);
+        } catch (Throwable $exception) {
+            $this->log($exception->getMessage() . ' ' . $exception->getCode());
+            throw new RuntimeException('Error while sending request', $exception->getCode(), $exception);
         }
     }
 
@@ -116,5 +119,12 @@ class Client
         $data = json_decode($json, true);
         $this->lastQueryCount = $data['hydra:totalItems'] ?? -1;
         return isset($data['hydra:member']) ? json_encode($data['hydra:member']) : $json;
+    }
+
+    private function log(string $message, string $level = 'error'): void
+    {
+        if ($this->logger !== null) {
+            $this->logger->{$level}($message);
+        }
     }
 }

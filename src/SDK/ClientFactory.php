@@ -11,10 +11,11 @@ use JsonHub\SDK\Client\Mapper\EntityMapper;
 use JsonHub\SDK\Client\MapperService;
 use JsonHub\SDK\Client\RequestFactory;
 use JsonHub\SDK\Client\UrlFactory;
+use Psr\Log\LoggerInterface;
 
 class ClientFactory
 {
-    public static function create(string $apiUrl): Client
+    public static function create(string $apiUrl, LoggerInterface|null $logger = null): Client
     {
         return new Client(
             new GuzzleClient(),
@@ -28,6 +29,7 @@ class ClientFactory
                 ),
                 new DefinitionMapper(),
             ]),
+            $logger,
         );
     }
 }
