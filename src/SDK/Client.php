@@ -104,6 +104,12 @@ class Client
     ): object {
         try {
             $response = $this->httpClient->sendRequest($request);
+
+            match($response->getStatusCode()) {
+                200, 201 => null,
+                default => throw new RuntimeException('Response status code', $response->getStatusCode()),
+            };
+
             $body = $this->extractFromJsonLD($response->getBody()->getContents());
             return $this->mapperFactory
                 ->getMapperFor($responseClassMapper)
