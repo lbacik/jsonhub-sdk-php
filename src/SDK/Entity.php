@@ -11,7 +11,10 @@ readonly class Entity
         public string|null $iri,
         public string $slug,
         public array $data,
-        public string|null $definition, // EntityByDefinition results do not have this field
+        public string|null $definition,
+        public string|null $parent = null,
+        public bool $private = false,
+        public bool $owned = false,
     ) {
     }
 }

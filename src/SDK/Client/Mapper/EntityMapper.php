@@ -21,6 +21,9 @@ class EntityMapper extends MapperAbstract
             $data['slug'] ?? '',
             $data['data'],
             $data['definition'] ?? null,
+            $data['parent'] ?? null,
+            $data['private'] ?? false,
+            $data['owned'] ?? false,
         );
     }
 }
