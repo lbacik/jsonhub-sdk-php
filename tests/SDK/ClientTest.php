@@ -43,6 +43,7 @@ class ClientTest extends TestCase
                 ),
                 new DefinitionMapper(),
             ]),
+            null,
         );
     }
 
@@ -102,7 +103,7 @@ class ClientTest extends TestCase
         $this->assertEquals('test', $result->slug);
     }
 
-    private function createResponse(array $payload): ResponseInterface
+    private function createResponse(array $payload, int $statusCode = 200): ResponseInterface
     {
         $response = $this->createMock(ResponseInterface::class);
         $body = $this->createMock(StreamInterface::class);
@@ -116,6 +117,11 @@ class ClientTest extends TestCase
             ->expects($this->once())
             ->method('getBody')
             ->willReturn($body);
+
+        $response
+            ->expects($this->once())
+            ->method('getStatusCode')
+            ->willReturn($statusCode);
 
         return $response;
     }

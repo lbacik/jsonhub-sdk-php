@@ -72,6 +72,16 @@ readonly class RequestFactory
         );
     }
 
+    public function createUpdateEntityRequest(string $id, array $data, string $token): Request
+    {
+        return new Request(
+            'PATCH',
+            $this->urlFactory->getEntity($id),
+            $this->generateHeaders($token, content: 'application/merge-patch+json'),
+            json_encode($data)
+        );
+    }
+
     public function createValidateTokenRequest(string $token): Request
     {
         return new Request(
@@ -97,10 +107,11 @@ readonly class RequestFactory
 
     private function generateHeaders(
         ?string $token = null,
-        string $accept = 'application/json'
+        string $accept = 'application/json',
+        string $content = 'application/json',
     ): array {
         $headers =  [
-            'Content-Type' => 'application/json',
+            'Content-Type' => $content,
             'Accept' => $accept,
         ];
 

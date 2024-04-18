@@ -56,14 +56,17 @@ class Client
         return $this->processRequestAndMapResponse($request, Definition::class);
     }
 
-    public function createEntity(array $data, string $definitionUuid, string $token): Entity
+    public function createEntity(Entity $entity, string $token): Entity
     {
-        $payload = [
-            'data' => $data,
-            'definition' => '/api/definitions/' . $definitionUuid,
-        ];
+        $request = $this->requestFactory->createCreateEntityRequest($entity->toArray(), $token);
 
-        $request = $this->requestFactory->createCreateEntityRequest($payload, $token);
+        /** @var Entity */
+        return $this->processRequestAndMapResponse($request, Entity::class);
+    }
+
+    public function updateEntity(Entity $entity, string $token): Entity
+    {
+        $request = $this->requestFactory->createUpdateEntityRequest($entity->id, $entity->toArray(), $token);
 
         /** @var Entity */
         return $this->processRequestAndMapResponse($request, Entity::class);
@@ -105,7 +108,7 @@ class Client
         try {
             $response = $this->httpClient->sendRequest($request);
 
-            match($response->getStatusCode()) {
+            match ($response->getStatusCode()) {
                 200, 201 => null,
                 default => throw new RuntimeException('Response status code', $response->getStatusCode()),
             };
