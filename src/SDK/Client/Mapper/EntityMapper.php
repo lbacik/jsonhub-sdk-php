@@ -18,10 +18,12 @@ class EntityMapper extends MapperAbstract
         return new Entity(
             $data['id'] ?? null,
             $data['@id'] ?? null,
-            $data['slug'] ?? '',
+            $data['slug'] ?? null,
             $data['data'],
             $data['definition'] ?? null,
-            $data['parent'] ?? null,
+            !empty($data['parent'])
+                ? $data['parent']['@id'] ?? sprintf('/api/entities/%s', $data['parent']['id'])
+                : null,
             $data['private'] ?? false,
             $data['owned'] ?? false,
         );
