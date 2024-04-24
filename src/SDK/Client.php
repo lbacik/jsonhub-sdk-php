@@ -72,6 +72,13 @@ class Client
         return $this->processRequestAndMapResponse($request, Entity::class);
     }
 
+    public function deleteEntity(string $entityUuid, string $token): void
+    {
+        $request = $this->requestFactory->createDeleteEntityRequest($entityUuid, $token);
+
+        $this->processRequestAndMapResponse($request);
+    }
+
     public function validateToken(string $token): bool
     {
         $request = $this->requestFactory->createValidateTokenRequest($token);
@@ -103,17 +110,22 @@ class Client
 
     private function processRequestAndMapResponse(
         RequestInterface $request,
-        string $responseClassMapper
-    ): object {
+        string|null $responseClassMapper = null,
+    ): object|null {
         try {
             $response = $this->httpClient->sendRequest($request);
 
             match ($response->getStatusCode()) {
-                200, 201 => null,
+                200, 201, 204 => null,
                 default => throw new RuntimeException('Response status code', $response->getStatusCode()),
             };
 
             $body = $this->extractFromJsonLD($response->getBody()->getContents());
+
+            if ($responseClassMapper === null) {
+                return null;
+            }
+
             return $this->mapperFactory
                 ->getMapperFor($responseClassMapper)
                 ->map($body);

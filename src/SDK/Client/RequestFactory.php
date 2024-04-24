@@ -82,6 +82,15 @@ readonly class RequestFactory
         );
     }
 
+    public function createDeleteEntityRequest(string $id, string $token): Request
+    {
+        return new Request(
+            'DELETE',
+            $this->urlFactory->getEntity($id),
+            $this->generateHeaders($token),
+        );
+    }
+
     public function createValidateTokenRequest(string $token): Request
     {
         return new Request(
