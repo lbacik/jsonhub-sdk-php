@@ -21,11 +21,18 @@ class EntityMapper extends MapperAbstract
             $data['slug'] ?? null,
             $data['data'],
             $data['definition'] ?? null,
-            !empty($data['parent'])
-                ? $data['parent']['@id'] ?? sprintf('/api/entities/%s', $data['parent']['id'])
-                : null,
+            $this->getParentIri($data['parent'] ?? null),
             $data['private'] ?? false,
             $data['owned'] ?? false,
         );
+    }
+
+    private function getParentIri(mixed $parent): string|null
+    {
+        if (is_array($parent)) {
+            return $parent['@id'] ?? sprintf('/api/entities/%s', $parent['id']);
+        }
+
+        return $parent;
     }
 }
