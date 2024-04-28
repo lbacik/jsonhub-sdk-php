@@ -16,6 +16,7 @@ class DefinitionMapper extends MapperAbstract
     public function mapArray(array $data): object
     {
         return new Definition(
+            id: $data['id'],
             slug: $data['slug'] ?? '',
             data: $data['jsonSchema'],
         );
