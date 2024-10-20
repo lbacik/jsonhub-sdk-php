@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace JsonHub\SDK;
 
-readonly class Definition
+readonly class Definition extends AbstractDocument
 {
     public function __construct(
-        public string $id,
-        public string $slug,
-        public array $data,
+        public string|null $id,
+        public string|null $iri,
+        public string|null $slug,
+        public array|null $data,
+        public Entity|null $parentEntity = null,
     ) {
     }
 }

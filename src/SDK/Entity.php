@@ -4,48 +4,17 @@ declare(strict_types=1);
 
 namespace JsonHub\SDK;
 
-readonly class Entity
+readonly class Entity extends AbstractDocument
 {
-    private const FIELD_TO_IRI = [
-        'parent' => '/api/entities/%s',
-        'definition' => '/api/definitions/%s',
-    ];
-
     public function __construct(
         public string|null $id,
         public string|null $iri,
         public string|null $slug,
         public array|null $data,
-        public string|null $definition,
-        public string|null $parent = null,
+        public Definition|null $definition,
+        public Entity|null $parent = null,
         public bool|null $private = null,
         public bool|null $owned = null,
     ) {
-    }
-
-    public function toArray(): array
-    {
-        return array_reduce(
-            array_keys(get_object_vars($this)),
-            function ($carry, $key) {
-                if ($this->{$key} !== null) {
-                    if (
-                        array_key_exists($key, self::FIELD_TO_IRI)
-                        && str_starts_with($this->{$key}, substr(self::FIELD_TO_IRI[$key], 0, -2)) === false
-                    ) {
-                        $carry[$key] = sprintf(self::FIELD_TO_IRI[$key], $this->{$key});
-                    } else {
-                        $carry[$key] = $this->{$key};
-                    }
-                }
-                return $carry;
-            },
-            []
-        );
-    }
-
-    public static function asIri(string $iriKey, string $uuid): string
-    {
-        return sprintf(self::FIELD_TO_IRI[$iriKey], $uuid);
     }
 }
