@@ -62,6 +62,15 @@ readonly class RequestFactory
         );
     }
 
+    public function createGetDefinitionsRequest(FilterCriteria $criteria, string|null $token = null): Request
+    {
+        return new Request(
+            self::GET,
+            $this->urlFactory->getDefinitions($criteria->generateQueryString()),
+            $this->generateHeaders($token, 'application/ld+json'),
+        );
+    }
+
     public function createCreateEntityRequest(array $data, string $token): Request
     {
         return new Request(
@@ -87,6 +96,35 @@ readonly class RequestFactory
         return new Request(
             'DELETE',
             $this->urlFactory->getEntity($id),
+            $this->generateHeaders($token),
+        );
+    }
+
+    public function createCreateDefinitionRequest(array $data, string $token): Request
+    {
+        return new Request(
+            'POST',
+            $this->urlFactory->createDefinition(),
+            $this->generateHeaders($token),
+            json_encode($data)
+        );
+    }
+
+    public function createUpdateDefinitionRequest(string $id, array $data, string $token): Request
+    {
+        return new Request(
+            'PATCH',
+            $this->urlFactory->getDefinition($id),
+            $this->generateHeaders($token, content: 'application/merge-patch+json'),
+            json_encode($data)
+        );
+    }
+
+    public function createDeleteDefinitionRequest(string $id, string $token): Request
+    {
+        return new Request(
+            'DELETE',
+            $this->urlFactory->getDefinition($id),
             $this->generateHeaders($token),
         );
     }

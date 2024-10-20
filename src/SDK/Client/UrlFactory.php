@@ -60,9 +60,25 @@ readonly class UrlFactory
         );
     }
 
+    public function getDefinitions(?string $filter = null): string
+    {
+        $base = sprintf('%s/definitions', $this->apiUrl);
+
+        if ($filter) {
+            return sprintf('%s?%s', $base, $filter);
+        }
+
+        return $base;
+    }
+
     public function createEntity(): string
     {
         return sprintf('%s/entities', $this->apiUrl);
+    }
+
+    public function createDefinition(): string
+    {
+        return sprintf('%s/definitions', $this->apiUrl);
     }
 
     public function validateToken(): string
