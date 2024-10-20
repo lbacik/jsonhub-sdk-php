@@ -40,13 +40,13 @@ class Client
         return $this->processRequestAndMapResponse($request, EntityCollection::class);
     }
 
-    public function getMyEntities(FilterCriteria $criteria, string $token): EntityCollection
-    {
-        $request = $this->requestFactory->createGetMyEntitiesRequest($criteria, $token);
-
-        /** @var EntityCollection */
-        return $this->processRequestAndMapResponse($request, EntityCollection::class);
-    }
+//    public function getMyEntities(FilterCriteria $criteria, string $token): EntityCollection
+//    {
+//        $request = $this->requestFactory->createGetMyEntitiesRequest($criteria, $token);
+//
+//        /** @var EntityCollection */
+//        return $this->processRequestAndMapResponse($request, EntityCollection::class);
+//    }
 
     public function getDefinition(string $definitionUuid): Definition
     {
@@ -54,6 +54,14 @@ class Client
 
         /** @var Definition */
         return $this->processRequestAndMapResponse($request, Definition::class);
+    }
+
+    public function getDefinitions(FilterCriteria $criteria): DefinitionCollection
+    {
+        $request = $this->requestFactory->createGetDefinitionsRequest($criteria);
+
+        /** @var DefinitionCollection */
+        return $this->processRequestAndMapResponse($request, DefinitionCollection::class);
     }
 
     public function createEntity(Entity $entity, string $token): Entity
@@ -79,14 +87,39 @@ class Client
         $this->processRequestAndMapResponse($request);
     }
 
-    public function validateToken(string $token): bool
+    // createDefinition, updateDefinition, deleteDefinition
+
+    public function createDefinition(Definition $definition, string $token): Definition
     {
-        $request = $this->requestFactory->createValidateTokenRequest($token);
+        $request = $this->requestFactory->createCreateDefinitionRequest($definition->toArray(), $token);
 
-        $response = $this->httpClient->sendRequest($request);
-
-        return $response->getStatusCode() === 200;
+        /** @var Definition */
+        return $this->processRequestAndMapResponse($request, Definition::class);
     }
+
+    public function updateDefinition(Definition $definition, string $token): Definition
+    {
+        $request = $this->requestFactory->createUpdateDefinitionRequest($definition->id, $definition->toArray(), $token);
+
+        /** @var Definition */
+        return $this->processRequestAndMapResponse($request, Definition::class);
+    }
+
+    public function deleteDefinition(string $definitionUuid, string $token): void
+    {
+        $request = $this->requestFactory->createDeleteDefinitionRequest($definitionUuid, $token);
+
+        $this->processRequestAndMapResponse($request);
+    }
+
+//    public function validateToken(string $token): bool
+//    {
+//        $request = $this->requestFactory->createValidateTokenRequest($token);
+//
+//        $response = $this->httpClient->sendRequest($request);
+//
+//        return $response->getStatusCode() === 200;
+//    }
 
     public function getOAuthToken(string $clientId, string $clientSecret): string|null
     {
