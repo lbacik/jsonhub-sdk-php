@@ -8,6 +8,11 @@ use JsonHub\SDK\Entity;
 
 class EntityMapper extends MapperAbstract
 {
+    public function __construct(
+        private DefinitionMapper $definitionMapper,
+    ) {
+    }
+
     public function getType(): string
     {
         return Entity::class;
@@ -15,13 +20,15 @@ class EntityMapper extends MapperAbstract
 
     public function mapArray(array $data): object
     {
+        $parent = $data['parent'] ?? null;
+
         return new Entity(
             $data['id'] ?? null,
             $data['@id'] ?? null,
             $data['slug'] ?? null,
-            $data['data'],
-            $data['definition'] ?? null,
-            $this->getParentIri($data['parent'] ?? null),
+            $data['data'] ?? null,
+            $this->definitionMapper->mapArray($data['definition']),
+            $parent ? $this->mapArray($parent) : null,
             $data['private'] ?? false,
             $data['owned'] ?? false,
         );
