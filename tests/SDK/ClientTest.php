@@ -8,6 +8,7 @@ use JsonHub\SDK\Client;
 use JsonHub\SDK\Client\Mapper\DefinitionMapper;
 use JsonHub\SDK\Client\Mapper\EntityCollectionMapper;
 use JsonHub\SDK\Client\Mapper\EntityMapper;
+use JsonHub\SDK\Client\Mapper\ParentEntityMapper;
 use JsonHub\SDK\Client\MapperService;
 use JsonHub\SDK\Client\RequestFactory;
 use JsonHub\SDK\Client\UrlFactory;
@@ -37,11 +38,21 @@ class ClientTest extends TestCase
                 new UrlFactory(self::API_URL)
             ),
             new MapperService([
-                new EntityMapper(),
-                new EntityCollectionMapper(
-                    new EntityMapper(),
+                new EntityMapper(
+                    new DefinitionMapper(
+                        new ParentEntityMapper(),
+                    ),
                 ),
-                new DefinitionMapper(),
+                new EntityCollectionMapper(
+                    new EntityMapper(
+                        new DefinitionMapper(
+                            new ParentEntityMapper(),
+                        ),
+                    ),
+                ),
+                new DefinitionMapper(
+                    new ParentEntityMapper(),
+                ),
             ]),
             null,
         );
@@ -57,7 +68,12 @@ class ClientTest extends TestCase
                     'id' => '123',
                     'slug' => 'test',
                     'data' => [],
-                    'definition' => '345',
+                    'definition' => new Definition(
+                        '345',
+                        null,
+                        null,
+                        null,
+                    ),
                 ],
             ]));
 
@@ -77,7 +93,12 @@ class ClientTest extends TestCase
                     'id' => '123',
                     'slug' => 'test',
                     'data' => [],
-                    'definition' => '345',
+                    'definition' => new Definition(
+                        '345',
+                        null,
+                        null,
+                        null,
+                    ),
             ]));
 
         $result = $this->jsonHubClient->getEntity('123');
