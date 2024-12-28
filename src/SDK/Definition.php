@@ -6,6 +6,12 @@ namespace JsonHub\SDK;
 
 readonly class Definition extends AbstractDocument
 {
+    protected const UPDATABLE_FIELDS = [
+        'slug',
+        'data',
+        'parentEntity',
+    ];
+
     public function __construct(
         public string|null $id,
         public string|null $iri,

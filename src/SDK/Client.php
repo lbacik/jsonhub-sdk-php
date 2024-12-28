@@ -74,7 +74,7 @@ class Client
 
     public function updateEntity(Entity $entity, string $token): Entity
     {
-        $request = $this->requestFactory->createUpdateEntityRequest($entity->id, $entity->toArray(), $token);
+        $request = $this->requestFactory->createUpdateEntityRequest($entity->id, $entity->updatableToArray(), $token);
 
         /** @var Entity */
         return $this->processRequestAndMapResponse($request, Entity::class);
@@ -99,7 +99,11 @@ class Client
 
     public function updateDefinition(Definition $definition, string $token): Definition
     {
-        $request = $this->requestFactory->createUpdateDefinitionRequest($definition->id, $definition->toArray(), $token);
+        $request = $this->requestFactory->createUpdateDefinitionRequest(
+            $definition->id,
+            $definition->updatableToArray(),
+            $token
+        );
 
         /** @var Definition */
         return $this->processRequestAndMapResponse($request, Definition::class);
