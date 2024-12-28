@@ -30,7 +30,7 @@ class EntityMapper extends MapperAbstract
             $this->definitionMapper->mapArray($data['definition']),
             $parent ? $this->mapArray($parent) : null,
             $data['private'] ?? false,
-            $data['owned'] ?? false,
+            $data['isOwnedByCurrentUser'] ?? false,
         );
     }
 
