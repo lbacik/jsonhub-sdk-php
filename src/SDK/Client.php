@@ -6,6 +6,7 @@ namespace JsonHub\SDK;
 
 use JsonHub\SDK\Client\MapperService;
 use JsonHub\SDK\Client\RequestFactory;
+use JsonHub\SDK\Exception\UnauthorizedException;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
@@ -154,6 +155,7 @@ class Client
 
             match ($response->getStatusCode()) {
                 200, 201, 204 => null,
+                401 => throw UnauthorizedException::create(),
                 default => throw new RuntimeException('Response status code', $response->getStatusCode()),
             };
 
@@ -166,6 +168,8 @@ class Client
             return $this->mapperFactory
                 ->getMapperFor($responseClassMapper)
                 ->map($body);
+        } catch (UnauthorizedException $exception) {
+            throw $exception;
         } catch (Throwable $exception) {
             $this->log($exception->getMessage() . ' ' . $exception->getCode());
             throw new RuntimeException('Error while sending request', $exception->getCode(), $exception);
