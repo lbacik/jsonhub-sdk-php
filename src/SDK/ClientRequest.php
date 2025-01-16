@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace JsonHub\SDK;
 
+use JsonException;
 use JsonHub\SDK\Client\MapperService;
 use JsonHub\SDK\ClientRequest\JsonHubConnector;
 use JsonHub\SDK\ClientRequest\RequestCollection;
+use JsonHub\SDK\Exception\ApiViolationException;
 use JsonHub\SDK\Exception\UnauthorizedException;
 use RuntimeException;
+use Saloon\Http\Response;
 
 class ClientRequest
 {
@@ -32,6 +35,7 @@ class ClientRequest
         match ($response->status()) {
             200, 201, 204 => null,
             401 => throw UnauthorizedException::create(),
+            422 => $this->mapResponseToException($response),
             default => throw new RuntimeException('Response status code', $response->status()),
         };
 
@@ -56,5 +60,20 @@ class ClientRequest
         $data = json_decode($json, true);
         $this->lastQueryCount = $data['hydra:totalItems'] ?? -1;
         return isset($data['hydra:member']) ? json_encode($data['hydra:member']) : $json;
+    }
+
+    /** @throws ApiViolationException|JsonException */
+    private function mapResponseToException(Response $response): void
+    {
+        $parsedResponse = json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR);
+
+        $violations = $parsedResponse['violations'] ?? [];
+
+        $result = [];
+        foreach ($violations as $violation) {
+            $result[$violation['propertyPath']] = $violation['message'];
+        }
+
+        throw ApiViolationException::violations($result);
     }
 }
