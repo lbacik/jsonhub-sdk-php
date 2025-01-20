@@ -26,7 +26,7 @@ class FilterCriteria
         $this->definitionUuid && $queryParamsArray['definition'] = $this->definitionUuid;
         $this->parentUuid && $queryParamsArray['parent'] = $this->parentUuid;
         $this->slugSearchTerm && $queryParamsArray['slug'] = $this->slugSearchTerm;
-        $this->dataSearchTerm && $queryParamsArray['data'] = $this->dataSearchTerm;
+        $this->dataSearchTerm && $queryParamsArray['q'] = $this->dataSearchTerm;
         $this->isOwnedByCurrentUser && $queryParamsArray['owned'] = $this->isOwnedByCurrentUser;
 
         return http_build_query($queryParamsArray);
